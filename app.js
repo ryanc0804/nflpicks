@@ -86,7 +86,7 @@ function renderSheet() {
   const cur = currentWeek();
   $("weeks").innerHTML = WEEKS.map(w => {
     const r = recordFor(games.filter(g => g.week === w));
-    return `<button class="wk${w === sel ? " sel" : ""}${w === cur ? " cur" : ""}" data-week="${w}" aria-pressed="${w === sel}"><span class="n">Wk ${w}</span><span class="r">${r.w + r.l + r.t ? fmtRec(r) : "—"}</span></button>`;
+    return `<button class="wk${w === sel ? " sel" : ""}${w === cur ? " cur" : ""}" data-week="${w}" aria-pressed="${w === sel}"><span class="n"><span class="wk-pre">Wk </span>${w}</span><span class="r">${r.w + r.l + r.t ? fmtRec(r) : "—"}</span></button>`;
   }).join("");
 
   const wk = games.filter(g => g.week === sel).sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff));
