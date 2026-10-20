@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>NFL Pick Sheet</title>
+  <meta name="description" content="Pick the winner of every NFL game and see where you stand.">
+  <meta name="theme-color" content="#121212">
+  <link rel="icon" href="logos/KC.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@600;700&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="eyebrow">NFL Pick Sheet</div>
+        <h1 class="page-title" id="pageTitle" hidden></h1>
+      </div>
+      <div class="side" id="side" hidden>
+        <nav class="nav">
+          <span id="who"></span>
+          <button class="linkbtn" id="toStandings">Standings</button>
+          <button class="linkbtn" id="toPicks" hidden>Picks</button>
+          <button class="linkbtn" id="signOut">Sign out</button>
+        </nav>
+        <div class="record" id="recordBox">
+          <div class="stats">
+            <div class="stat wk-stat"><span class="lab" id="wkLabel">This week</span><b id="wkRec">0–0</b></div>
+            <div class="stat"><span class="lab">Season</span><b id="rec">0–0</b></div>
+          </div>
+          <small><span id="wkPicked"></span> · <span id="save"></span></small>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- Sign in / create account / reset password -->
+      <section id="authView" hidden>
+        <form class="card" id="authForm" novalidate>
+          <div class="tabs" role="tablist">
+            <button type="button" role="tab" id="tabIn" class="tab on" aria-selected="true">Sign in</button>
+            <button type="button" role="tab" id="tabUp" class="tab" aria-selected="false">Create account</button>
+          </div>
+          <label class="field" id="nameField" hidden>Display name
+            <input id="displayName" autocomplete="nickname" maxlength="30" placeholder="What the standings call you">
+          </label>
+          <label class="field" id="emailField">Email
+            <input id="email" type="email" autocomplete="email" required>
+          </label>
+          <label class="field" id="passField">Password
+            <input id="password" type="password" autocomplete="current-password" minlength="6" required>
+          </label>
+          <button class="primary" id="authSubmit" type="submit">Sign in</button>
+          <button type="button" class="linkbtn small" id="forgot">Forgot password?</button>
+          <p class="msg" id="authMsg" role="status"></p>
+        </form>
+      </section>
+
+      <section id="sheetView" hidden>
+        <nav class="weeks-scroll" aria-label="Weeks"><div class="weeks" id="weeks"></div></nav>
+        <p class="catch-note" id="catchNote" hidden>Catch-up week: the site opened mid-season, so you can still pick games already played. Tap a team, then tap it again to lock it in. Locked picks can't be changed.</p>
+        <div id="slate"></div>
+        <p class="foot">Tap a team to pick it. Picks save as you tap and lock at kickoff.</p>
+      </section>
+
+      <section id="standingsView" hidden>
+        <div class="tablewrap">
+          <table class="standings">
+            <thead><tr><th>#</th><th>Player</th><th class="num">Record</th><th class="num">Win %</th><th class="num">Picks</th></tr></thead>
+            <tbody id="standingsBody"></tbody>
+          </table>
+        </div>
+        <p class="foot">Ranked by wins, then fewest losses. Updates as games go final.</p>
+      </section>
+
+      <section id="setupView" hidden>
+        <div class="card">
+          <h2>Almost there</h2>
+          <p>Add your Supabase project URL and anon key to <code>config.js</code>, then reload. The README walks through it.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

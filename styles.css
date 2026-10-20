@@ -1,0 +1,131 @@
+/* A broadcast schedule card: one dark sheet, games as paired team-color tiles grouped under TV windows. */
+:root {
+  color-scheme: dark;
+  --bg: #121212;
+  --card: #1c1c1c;
+  --ink: #f2f2f2;
+  --muted: #9a9a9a;
+  --rule: #3a3a3a;
+  --orange: #ff8a1f;
+  --win: #36d17a;
+  --loss: #ff5a4e;
+  --font-display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --font-body: "Barlow", "Segoe UI", system-ui, sans-serif;
+  --font-num: "Barlow Condensed", "Arial Narrow", sans-serif;
+}
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 14px; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+[hidden] { display: none !important; }
+button { font: inherit; }
+.wrap { max-width: 760px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 18px 28px; }
+
+/* Header */
+header { display: flex; justify-content: space-between; align-items: end; gap: 10px 20px; flex-wrap: wrap; padding-bottom: 10px; border-bottom: 2px solid var(--rule); margin-bottom: 14px; }
+.eyebrow { font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: .04em; text-transform: uppercase; }
+.page-title { margin: 0; color: var(--orange); font-family: var(--font-display); font-weight: 900; font-size: 34px; text-transform: uppercase; line-height: 1; }
+/* Week strip: the season as a timeline, each week with your record */
+.weeks-scroll { overflow-x: auto; scrollbar-width: none; margin: -4px 0 14px; }
+.weeks-scroll::-webkit-scrollbar { display: none; }
+.weeks { display: flex; gap: 4px; width: max-content; }
+.wk { appearance: none; background: none; border: 1px solid transparent; color: var(--muted); border-radius: 6px; padding: 4px 8px; min-width: 52px; cursor: pointer; display: grid; gap: 1px; text-align: center; }
+.wk:hover { color: var(--ink); border-color: var(--rule); }
+.wk:focus-visible { outline: 2px solid var(--orange); outline-offset: 1px; }
+.wk .n { font-family: var(--font-display); font-weight: 800; font-size: 15px; text-transform: uppercase; letter-spacing: .03em; }
+.wk .r { font-family: var(--font-num); font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums; }
+.wk.cur .n::after { content: ""; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--orange); margin-left: 4px; vertical-align: middle; }
+.wk.sel { background: var(--orange); color: #1a0d00; }
+.wk.sel .n::after { background: #1a0d00; }
+.side { display: grid; gap: 6px; justify-items: end; }
+.nav { display: flex; gap: 12px; align-items: baseline; font-size: 13px; color: var(--muted); flex-wrap: wrap; justify-content: flex-end; }
+.nav #who { color: var(--ink); font-weight: 600; }
+.linkbtn { background: none; border: none; padding: 0; color: var(--orange); cursor: pointer; font-weight: 600; font-size: 13px; }
+.linkbtn:hover { text-decoration: underline; }
+.linkbtn:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+.linkbtn.small { font-size: 12px; justify-self: center; }
+.record { text-align: right; display: grid; gap: 4px; justify-items: end; }
+.stats { display: flex; gap: 18px; }
+.stat { display: grid; gap: 1px; justify-items: end; }
+.stat .lab { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.stat b { font-family: var(--font-num); font-weight: 700; font-size: 28px; font-variant-numeric: tabular-nums; line-height: 1; }
+.wk-stat .lab { color: var(--orange); }
+.record small { color: var(--muted); font-size: 12px; }
+
+/* Pick sheet */
+/* Headings take exactly one game row, so both columns sit on the same grid and rows line up across. */
+#slate { --row: 44px; --gap: 8px; columns: 2; column-gap: 24px; }
+.group { break-inside: avoid; }
+.win-h { height: var(--row); margin: 0 0 var(--gap); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 3px; font-family: var(--font-display); font-weight: 800; font-size: 19px; text-transform: uppercase; letter-spacing: .02em; color: var(--orange); line-height: 1; }
+.game { display: grid; grid-template-columns: 1fr 1fr; break-inside: avoid; margin-bottom: var(--gap); }
+.tile { appearance: none; position: relative; height: var(--row); border: 1px solid rgba(255,255,255,.8); padding: 0; cursor: pointer; display: grid; place-items: center; overflow: hidden; transition: filter .12s; }
+.tile + .tile { border-left: none; }
+.tile img { width: 80%; height: 40px; object-fit: contain; pointer-events: none; }
+.tile:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; z-index: 1; }
+.tile[disabled] { cursor: default; }
+/* Your pick is the team you have winning: green with a W. If it loses, it turns red with an L. */
+.tile.picked { box-shadow: inset 0 0 0 3px var(--win); border-color: var(--win); }
+.tile.picked::after { content: "W"; position: absolute; top: 0; right: 0; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 0 0 0 5px; background: var(--win); color: #06210f; font-family: var(--font-display); font-weight: 900; font-size: 12px; line-height: 17px; text-align: center; }
+.tile.picked.wrong { box-shadow: inset 0 0 0 3px var(--loss); border-color: var(--loss); }
+.tile.picked.wrong::after { content: "L"; background: var(--loss); color: #2a0503; }
+/* Once the game is final, your pick's whole tile fills: green if it won, red if it lost. */
+.tile.picked.right { background-color: #1e9e57 !important; border-color: #1e9e57; box-shadow: none; }
+.tile.picked.right::after { background: #0b4d27; color: #fff; }
+.tile.picked.wrong { background-color: #c8372d !important; box-shadow: none; }
+.tile.picked.wrong::after { background: #6a140f; color: #fff; }
+/* A tie is a wash: neutral outline, and the game doesn't count. */
+.tile.picked.push { box-shadow: inset 0 0 0 3px var(--muted); border-color: var(--muted); }
+.tile.picked.push::after { content: "T"; background: var(--muted); color: #111; }
+/* Catch-up weeks: the first tap marks a team, the second locks it in for good. */
+.tile.pending { box-shadow: inset 0 0 0 3px var(--orange); border-color: var(--orange); }
+.tile.pending::after { content: "Tap to lock"; position: absolute; left: 0; right: 0; bottom: 0; background: var(--orange); color: #1a0d00; font-family: var(--font-display); font-weight: 800; font-size: 11px; line-height: 14px; text-transform: uppercase; letter-spacing: .03em; }
+.game.has-pending .tile:not(.pending) { filter: brightness(.45) saturate(.7); }
+.catch-note { margin: -6px 0 14px; padding: 8px 10px; border-left: 3px solid var(--orange); background: var(--card); color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+/* The team you didn't pick steps back. Gray means one thing only: a game that kicked off without your pick. */
+.game.has-pick .tile:not(.picked) { filter: brightness(.45) saturate(.7); }
+.game.locked:not(.has-pick) .tile { filter: grayscale(1) brightness(.45); }
+.tag, .score { position: absolute; font-family: var(--font-num); font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.9); font-variant-numeric: tabular-nums; }
+.tag { bottom: 2px; right: 4px; font-size: 12px; }
+.score { top: 1px; left: 4px; font-size: 14px; }.foot { margin: 14px 0 0; color: var(--muted); font-size: 12px; text-align: center; }
+
+/* Sign in */
+.card { max-width: 360px; margin: 24px auto 0; background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 18px; display: grid; gap: 12px; }
+.card h2 { margin: 0; font-family: var(--font-display); font-weight: 800; text-transform: uppercase; color: var(--orange); }
+.card p { margin: 0; color: var(--muted); line-height: 1.5; }
+.tabs { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--rule); }
+.tab { background: none; border: none; color: var(--muted); padding: 8px 0 10px; cursor: pointer; font-family: var(--font-display); font-weight: 800; font-size: 17px; text-transform: uppercase; letter-spacing: .02em; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.tab.on { color: var(--ink); border-bottom-color: var(--orange); }
+.tab:focus-visible { outline: 2px solid var(--orange); outline-offset: -2px; }
+.field { display: grid; gap: 5px; font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: .03em; }
+.field input { background: var(--bg); border: 1px solid var(--rule); border-radius: 6px; color: var(--ink); padding: 10px 11px; font: inherit; font-size: 16px; }
+.field input:focus { outline: 2px solid var(--orange); outline-offset: 0; border-color: transparent; }
+.primary { background: var(--orange); color: #1a0d00; border: none; border-radius: 6px; padding: 11px; font-family: var(--font-display); font-weight: 800; font-size: 18px; text-transform: uppercase; cursor: pointer; }
+.primary:hover { filter: brightness(1.08); }
+.primary:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.primary[disabled] { opacity: .6; cursor: default; }
+.msg { min-height: 1.2em; font-size: 13px; text-align: center; }
+.msg.err { color: var(--loss); }
+.msg.ok { color: var(--win); }
+
+/* Standings */
+.tablewrap { overflow-x: auto; }
+.standings { width: 100%; border-collapse: collapse; font-size: 15px; }
+.standings th { text-align: left; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding: 6px 8px; border-bottom: 1px solid var(--rule); }
+.standings td { padding: 9px 8px; border-bottom: 1px solid #262626; }
+.standings .num { text-align: right; font-family: var(--font-num); font-weight: 700; font-size: 17px; font-variant-numeric: tabular-nums; }
+.standings th.num { font-family: var(--font-body); font-size: 11px; }
+.standings td:first-child { color: var(--muted); font-family: var(--font-num); font-weight: 700; width: 2.5em; }
+.standings tr.me td { background: #2a2110; }
+.standings tr.me td:nth-child(2) { color: var(--orange); font-weight: 700; }
+.empty { color: var(--muted); text-align: center; padding: 18px 0; }
+
+@media (max-width: 520px) {
+  .wrap { padding-block: 12px 20px; }
+  #slate { --row: 36px; --gap: 5px; column-gap: 10px; }
+  .page-title { font-size: 28px; }
+  .wk { min-width: 46px; padding: 3px 6px; }
+  .win-h { font-size: 15px; padding-bottom: 2px; }
+  .tile img { height: 32px; }
+  .tag { font-size: 10px; }
+  .score { font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .tile { transition: none; } }
